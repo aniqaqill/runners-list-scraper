@@ -3,3 +3,7 @@ events.json
 events.csv
 technical_docs.md
 project_context.md
+.pytest_cache
+htmlcov
+.coverage
+__pycache__ 
