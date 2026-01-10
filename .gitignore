@@ -7,3 +7,4 @@ project_context.md
 htmlcov
 .coverage
 __pycache__ 
+.env
