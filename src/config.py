@@ -65,8 +65,12 @@ def get_api_url() -> str | None:
 
 
 def get_api_key() -> str | None:
-    """Get the API key from environment variables."""
-    return os.environ.get("API_KEY")
+    """Get the API key from environment variables.
+    
+    Checks for API_KEY first, then falls back to INTERNAL_API_KEY
+    for compatibility with the Go API naming convention.
+    """
+    return os.environ.get("API_KEY") or os.environ.get("INTERNAL_API_KEY")
 
 
 def get_scrape_url() -> str | None:
