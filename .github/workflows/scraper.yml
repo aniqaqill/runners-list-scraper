@@ -1,0 +1,54 @@
+name: Daily Scraper
+
+on:
+  schedule:
+    # Run daily at 8:00 AM UTC (4:00 PM MYT)
+    - cron: '0 8 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+env:
+  PYTHON_VERSION: '3.12'
+
+jobs:
+  scrape:
+    name: Scrape Running Events
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+          cache-dependency-path: requirements.txt
+
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+
+      - name: Install ChromeDriver
+        uses: nanasess/setup-chromedriver@v2
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run scraper
+        env:
+          SCRAPE_URL: ${{ secrets.SCRAPE_URL }}
+          API_URL: ${{ secrets.API_URL }}
+          INTERNAL_API_KEY: ${{ secrets.INTERNAL_API_KEY }}
+        run: python -m src.main
+
+      - name: Upload scraped data as artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: scraped-events-${{ github.run_number }}
+          path: |
+            events.json
+            events.csv
+          retention-days: 7
