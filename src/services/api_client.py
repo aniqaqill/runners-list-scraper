@@ -66,7 +66,7 @@ def send_to_api(
                 api_url,
                 json=payload,
                 headers=headers,
-                timeout=30
+                timeout=120  
             )
             
             # Check for authentication errors (don't retry)
